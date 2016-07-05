@@ -1,3 +1,5 @@
+require('babel-register');
+
 import path from 'path'
 import gulp from 'gulp'
 import sourcemaps from 'gulp-sourcemaps'

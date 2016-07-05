@@ -1,0 +1,7 @@
+export const ACTIONS = {
+	ADD_USER_NAME: 'ADD_USER_NAME',
+	ADD_EMAIL: 'ADD_EMAIL',
+	DELETE_FARMER: 'DELETE_FARMER'
+};
+
+export default ACTIONS;
