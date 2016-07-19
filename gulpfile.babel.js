@@ -63,7 +63,7 @@ gulp.task(`build`, [`copy-index`, `transpile`], () =>
 )
 
 gulp.task(`copy-index`, () => {
-  return gulp.src(`index.html`)
+  return gulp.src(`src/index.html`)
              .pipe(debug())
              .pipe(gulp.dest(dest))
              .pipe(gulp.dest(dist))
