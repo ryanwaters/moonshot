@@ -33,7 +33,7 @@ const packagePath = path.resolve(`${__dirname}/package.json`)
 const appSrc = relative('/src/js/moonshot.js')
 const src = relative('/src/**/*.js')
 
-const sassPath = relative('/src/**/*.scss')
+const sassPath = relative('/src/sass/app.scss')
 const dest = relative('/build/')
 const dist = relative('/dist/')
 const functionalTests = relative('/tests/functional/*.js')

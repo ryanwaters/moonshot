@@ -34,9 +34,13 @@ module.exports = {
         test: /\.(json|eslintrc)$/,
         loader: 'json-loader'
       },
+      // {
+      //   test: /\.scss$/,
+      //   loader: 'style!css!sass?includePaths[]=' + path.resolve(__dirname, './node_modules')
+      // },
       {
         test: /\.scss$/,
-        loader: 'style!css!sass?includePaths[]=' + path.resolve(__dirname, './node_modules')
+        loader: ['style', 'css', 'sass']
       },
       {
         test: /\.((woff2?|svg)(\?v=[0-9]\.[0-9]\.[0-9]))|(woff2?|svg|jpe?g|png|gif|ico)$/,
