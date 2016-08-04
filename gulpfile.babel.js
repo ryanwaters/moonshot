@@ -1,70 +1,114 @@
-require('babel-register');
-
+/* eslint no-console: 0 */
+// import babelCore from 'babel-core/register'
 import path from 'path'
 import gulp from 'gulp'
+import flatten from 'gulp-flatten'
+import rename from 'gulp-rename'
 import sourcemaps from 'gulp-sourcemaps'
 import babel from 'gulp-babel'
 import changed from 'gulp-changed'
 import mocha from 'gulp-mocha'
-// import exit from 'gulp-exit'
-// import plumber from 'gulp-plumber'
-import debug from 'gulp-debug'
-// import istanbul from 'gulp-istanbul'
+import exit from 'gulp-exit'
+import watch from 'gulp-watch'
+import batch from 'gulp-batch'
+import plumber from 'gulp-plumber'
+import rimraf from 'rimraf'
+// import debug from 'gulp-debug'
+import istanbul from 'gulp-istanbul'
 import sass from 'gulp-sass'
 import {Instrumenter} from 'isparta'
 import eslint from 'gulp-eslint'
-import R from 'ramda'
+import map from 'lodash/fp/map'
 import mkdirp from 'mkdirp'
+import yargs from 'yargs'
+import serverMaker from './dev-server'
 import webpack from 'webpack-stream'
-
-// import serverMaker from './server-maker'
-import webpackConfig from './webpack.config.development'
+import webpackProductionConfig from './webpack.config.prod.js'
+import david from 'gulp-david'
+import nsp from 'gulp-nsp'
 
 const relative = (loc) => path.resolve(`${__dirname}${loc}`)
 
-const appSrc = relative(`/src/js/index.js`)
-const src = relative(`/src/**/*.js`)
-const testSrc = relative(`/tests/**/*.js`)
-const artifactPath = process.env.CIRCLE_ARTIFACTS || relative(`/test-output/`)
-const sassPath = relative(`/src/**/*.scss`)
-const dest = relative(`/build/`)
-const dist = relative(`/dist/`)
-const functionalTests = relative(`/tests/functional/*.js`)
+const packagePath = path.resolve(`${__dirname}/package.json`)
+const appSrc = relative('/src/js/moonshot.js')
+const src = relative('/src/**/*.js')
 
-let argSrc = null, argTest = null
+const sassPath = relative('/src/**/*.scss')
+const dest = relative('/build/')
+const dist = relative('/dist/')
+const functionalTests = relative('/tests/functional/*.js')
 
-// const ignoreCoverage = []
 
-gulp.task(`makeBuild`, (done) =>
-  mkdirp(dest, (error) => {
-    if (!error) {
-      done()
-      return
-    }
-    console.log(`Error making ${dest}`, error)
-    if (error && error.stack) {
-      console.log(error.stack)
-    }
-  })
-)
-gulp.task(`transpile`, [`makeBuild`, `copy-index`], () => {
+let argSrc, argTest
+// expects something like `gulp test --path /components/spec-editor.js`
+if (yargs.argv.path) {
+  argSrc = relative('/src/js' + yargs.argv.path.replace(/spec\-/, ''))
+  argTest = relative('/tests' + yargs.argv.path)
+}
+
+gulp.task('checkDependencies', () => {
+  return gulp.src('package.json')
+    .pipe(david({
+      error404: true,
+      errorDepType: true,
+      errorDepCount: 5
+    }))
+    // .pipe(david.reporter)
+})
+
+
+gulp.task('makeBuild', (done) => mkdirp(dest, done))
+
+gulp.task('style', ['makeBuild'], () => gulp.src(sassPath)
+                                            .pipe(sass())
+                                            .pipe(gulp.dest(dest))
+                                            .pipe(gulp.dest(dist)))
+
+gulp.task('copy:favicon', () => gulp.src('favicons/*').pipe(gulp.dest('dist/')))
+gulp.task('copy:svg', () => gulp.src('src/svg/*').pipe(gulp.dest(dest + '/svg'))
+                                             .pipe(gulp.dest(dist + '/svg')))
+
+
+gulp.task('copy:index', () => gulp.src('index.html')
+                                  //  .pipe(debug())
+                                  .pipe(gulp.dest(dest))
+                                  .pipe(gulp.dest(dist)))
+
+gulp.task('clear:dist', (done) => rimraf('./dist/*', done))
+
+gulp.task('build', ['clear:dist', 'copy:index', 'copy:svg', 'copy:favicon'], () => gulp.src(srcSrc)
+                                             .pipe(webpack(webpackProductionConfig))
+                                             .pipe(gulp.dest(dist)))
+
+gulp.task('lint', () => gulp.src([src, testSrc, './gulpfile.babel.js'])
+                            .pipe(eslint())
+                            .pipe(eslint.format())
+                            .pipe(eslint.failAfterError()))
+
+gulp.task('transpile', ['makeBuild'], () => {
   return gulp.src(src)
              .pipe(changed(dest))
              .pipe(sourcemaps.init())
              .pipe(babel())
-             .pipe(sourcemaps.write(`.`))
+             .pipe(sourcemaps.write('.'))
              .pipe(gulp.dest(dest))
 })
 
-gulp.task(`build`, [`copy-index`, `transpile`], () =>
-  gulp.src(appSrc)
-      .pipe(webpack(webpackConfig))
-      .pipe(gulp.dest(dist))
+gulp.task('nsp', () => nsp({package: packagePath}, (e) => process.stdout.write(e.toString())))
+
+
+const remapTasks = map((task) => {
+  const {dep} = task
+  return dep
+})
+
+gulp.task('tasks', () => {
+  console.log(JSON.stringify(remapTasks(gulp.tasks), null, 2))
+})
+
+gulp.task(
+  'serve',
+  ['style', 'copy:index', 'copy:favicon'],
+  serverMaker
 )
-
-gulp.task(`copy-index`, () => {
-  return gulp.src(`src/index.html`)
-             .pipe(debug())
-             .pipe(gulp.dest(dest))
-             .pipe(gulp.dest(dist))
-})
+gulp.task('default', ['serve'])

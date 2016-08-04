@@ -6,6 +6,6 @@ import { render } from 'react-dom';
 
 // Import Components
 
-import Main from './components/main';
+import App from './components/app';
 
-render(Main, document.getElementById('root'));
+render(<App/>, document.getElementById('root'));
