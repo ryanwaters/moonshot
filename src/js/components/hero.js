@@ -4,9 +4,10 @@ const Hero = React.createClass({
   render() {
     return (
       <div className="hero">
-        <img className="heroImage"/>
-        <h1>moonshot</h1>
-        <h3>the marijuana marketplace</h3>
+        <div className="column row">
+          <h1>moonshot</h1>
+          <h3>the marijuana marketplace</h3>
+        </div>
       </div>
     )
   }

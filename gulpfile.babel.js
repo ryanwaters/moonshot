@@ -5,6 +5,7 @@ import gulp from 'gulp'
 import flatten from 'gulp-flatten'
 import rename from 'gulp-rename'
 import sourcemaps from 'gulp-sourcemaps'
+import autoprefixer from 'gulp-autoprefixer'
 import babel from 'gulp-babel'
 import changed from 'gulp-changed'
 import mocha from 'gulp-mocha'
@@ -59,7 +60,17 @@ gulp.task('checkDependencies', () => {
 
 gulp.task('makeBuild', (done) => mkdirp(dest, done))
 
-gulp.task('style', ['makeBuild'], () => gulp.src(sassPath)
+gulp.task('foundation', () => {
+  gulp.src('node_modules/foundation-sites/dist/foundation.min.css')
+      .pipe(gulp.dest(dest))
+})
+
+gulp.task('static', () => {
+  gulp.src('src/static/**/*')
+      .pipe(gulp.dest(dest))
+})
+gulp.task('style', ['makeBuild', 'static', 'foundation'], () => gulp.src('src/sass/app.scss')
+                                            .pipe(autoprefixer())
                                             .pipe(sass())
                                             .pipe(gulp.dest(dest))
                                             .pipe(gulp.dest(dist)))
