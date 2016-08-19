@@ -15,16 +15,18 @@ const Main = React.createClass({
 					<Header/>
 					<Hero/>
 
-          <div className="row">
-              <div className='sign-up-container small-6 column'>
+          <div className="row" data-equalizer data-equalize-on="medium">
+              <div className='sign-up-container medium-6 columns'>
                 <Link to='/cultivator-sign-up'>
-                  <button className="button" type='button'>Cultivator Sign Up</button>
+									<h3>I'm a cultivator</h3>
+                  <div className="sign-up-button callout" >Cultivator Sign Up</div>
                 </Link>
               </div>
 
-              <div className='sign-up-container small-6 column'>
+              <div className='sign-up-container medium-6 columns'>
                 <Link to='/retailer-sign-up'>
-                  <button className="button" type='button'>Retailer Sign Up</button>
+									<h3>I'm a retailer</h3>
+                  <div className="sign-up-button callout" >Retailer Sign Up</div>
                 </Link>
               </div>
           </div>
