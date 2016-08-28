@@ -1,7 +1,10 @@
-import React from 'react';
-import { render } from 'react-dom';
+import '../sass/app.scss'
+import '../sass/foundation.css'
 
-import { Router, Route, Link, IndexRoute, browserHistory} from 'react-router';
+import React from 'react'
+import { render } from 'react-dom'
+
+import { Router, Route, Link, IndexRoute, browserHistory} from 'react-router'
 
 
 
@@ -9,12 +12,11 @@ import { Router, Route, Link, IndexRoute, browserHistory} from 'react-router';
 
 // Import Components
 
-import App from './components/app';
-import NotFound from './components/404';
-import CultivatorSignUp from './components/cultivator-sign-up';
-import RetailerSignUp from './components/retailer-sign-up';
-import Main from './components/main';
-
+import App from './components/app'
+import NotFound from './components/404'
+import CultivatorSignUp from './components/cultivator-sign-up'
+import RetailerSignUp from './components/retailer-sign-up'
+import Main from './components/main'
 const routes = (
   <Router history={browserHistory}>
     <Route path='/' component={App}>
@@ -26,4 +28,4 @@ const routes = (
   </Router>
 )
 
-render(routes, document.getElementById('root'));
+render(routes, document.getElementById('root'))

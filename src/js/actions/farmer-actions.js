@@ -1,6 +1,6 @@
 import R from 'ramda'
 import React from 'react'
-import {ACTIONS} from '../constants/actions'
+import { ACTIONS } from '../constants/actions'
 
 export const addNewFarmer = (text)=> {
 	return {

@@ -7,7 +7,7 @@ module.exports = {
   entry: [
     `webpack-dev-server/client?http://localhost:${port}`,
     'webpack/hot/only-dev-server',
-    path.resolve(__dirname, 'src/js/moonshot.js')
+    './src/js/moonshot'
   ],
   output: {
     path: path.resolve(`${__dirname}/build`),
@@ -25,10 +25,9 @@ module.exports = {
         loader: 'style!css'
       },
       {
-        test: /\.js(x?)$/,
+        test: /\.js$/,
         loaders: ['react-hot', 'babel'],
-        // exclude: /node_modules/,
-        include: path.join(__dirname, 'src/js')
+        include: path.join(__dirname, 'src')
       },
       {
         test: /\.(json|eslintrc)$/,
@@ -40,16 +39,21 @@ module.exports = {
       // },
       {
         test: /\.scss$/,
-        loader: ['style', 'css', 'sass']
+        loaders: ['style', 'css', 'sass'],
+        include: path.join(__dirname, 'src')
       },
-      {
-        test: /\.((woff2?|svg)(\?v=[0-9]\.[0-9]\.[0-9]))|(woff2?|svg|jpe?g|png|gif|ico)$/,
-        loader: 'url?limit=10000'
-      },
-      {
-        test: /\.((ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9]))|(ttf|eot)$/,
-        loader: 'file'
-      }
+      // {
+      //   test: /\.((woff2?|svg)(\?v=[0-9]\.[0-9]\.[0-9]))|(woff2?|svg|jpe?g|png|gif|ico)$/,
+      //   loader: 'url?limit=10000'
+      // },
+      // {
+      //   test: /\.((ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9]))|(ttf|eot)$/,
+      //   loader: 'file'
+      // },
+      // {
+      //     test: /\.jpe?g$|\.gif$|\.png$/i,
+      //     loader: 'file-loader?name=src/static/images/[name].[ext]'
+      // }
     ]
   },
   resolve: {

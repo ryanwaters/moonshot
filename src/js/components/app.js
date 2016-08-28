@@ -12,6 +12,7 @@ import Main from './main';
 // const App = React.createClass({render() { return AppStateless(this.props )}})
 
 const App = React.createClass({
+	
 	render() {
 		return (
 			<div>
